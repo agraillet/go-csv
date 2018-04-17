@@ -1,9 +1,3 @@
-# go-csv
-实现类似Python的csv.DictReader和csv.DictWriter
-
-## Example
-
-```go
 package main
 
 import (
@@ -52,6 +46,5 @@ func main() {
 		}
 	}
 
-	writer.Flush()  // 注意最后需要刷到磁盘
+	writer.Flush() // 注意最后需要刷到磁盘
 }
-```
