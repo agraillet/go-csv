@@ -55,3 +55,36 @@ func main() {
 	writer.Flush()  // 注意最后需要刷到磁盘
 }
 ```
+
+## MapReader API
+
+```go
+func NewMapReader(r io.Reader) *MapReader
+
+// SetFieldnames 指定csv文件的字段名
+// 如果不指定的话，则默认使用csv文件的第一行作为字段名
+func (r *MapReader) SetFieldnames(fieldnames []string)
+
+func (r *MapReader) GetFieldnames() (fieldnames []string, err error) 
+
+// Read 读取一行记录
+func (r *MapReader) Read() (record map[string]string, err error) 
+
+// ReadAll 读取全部的内容
+func (r *MapReader) ReadAll() (records []map[string]string, err error)
+```
+
+## MapWriter API
+
+```go
+func NewMapWriter(w io.Writer, fieldnames []string) *MapWriter 
+
+func (w *MapWriter) WriteHeader() (err error) 
+
+func (w *MapWriter) WriteRow(row map[string]string) (err error) 
+
+func (w *MapWriter) WriteRows(rows []map[string]string) (err error) 
+
+// Flush 将数据刷到磁盘
+func (w *MapWriter) Flush() 
+```
