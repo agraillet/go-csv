@@ -18,6 +18,11 @@ func NewMapWriter(w io.Writer, fieldnames []string) *MapWriter {
 	}
 }
 
+// Init 配置csv的基本参数
+func (w *MapWriter) Init(params csv.Writer) {
+	w.Writer.Comma = params.Comma
+}
+
 func (w *MapWriter) WriteHeader() (err error) {
 	return w.Writer.Write(w.fieldnames)
 }

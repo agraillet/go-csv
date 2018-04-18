@@ -18,6 +18,13 @@ func NewMapReader(r io.Reader) *MapReader {
 	}
 }
 
+// Init 配置csv的基本参数
+func (r *MapReader) Init(params csv.Reader) {
+	r.Reader.Comma = params.Comma
+	r.Reader.LazyQuotes = params.LazyQuotes
+	r.Reader.TrimLeadingSpace = params.TrimLeadingSpace
+}
+
 // SetFieldnames 指定csv文件的字段名
 // 如果不指定的话，则默认使用csv文件的第一行作为字段名
 func (r *MapReader) SetFieldnames(fieldnames []string) {

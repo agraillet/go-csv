@@ -61,6 +61,9 @@ func main() {
 ```go
 func NewMapReader(r io.Reader) *MapReader
 
+// Init 配置csv的基本参数
+func (r *MapReader) Init(params csv.Reader)
+
 // SetFieldnames 指定csv文件的字段名
 // 如果不指定的话，则默认使用csv文件的第一行作为字段名
 func (r *MapReader) SetFieldnames(fieldnames []string)
@@ -78,6 +81,9 @@ func (r *MapReader) ReadAll() (records []map[string]string, err error)
 
 ```go
 func NewMapWriter(w io.Writer, fieldnames []string) *MapWriter 
+
+// Init 配置csv的基本参数
+func (w *MapWriter) Init(params csv.Writer) 
 
 func (w *MapWriter) WriteHeader() (err error) 
 
