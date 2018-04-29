@@ -94,3 +94,11 @@ func (w *MapWriter) WriteRows(rows []map[string]string) (err error)
 // Flush 将数据刷到磁盘
 func (w *MapWriter) Flush() 
 ```
+
+## utils
+
+```go
+// CountLines 统计csv文件的记录数
+func CountLines(r io.Reader) (n int, err error)
+
+```
