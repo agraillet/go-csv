@@ -8,7 +8,11 @@ import (
 )
 
 type MapReader struct {
-	Reader     *csv.Reader
+	Reader *csv.Reader
+
+	skip       int  // 跳过前面若干条记录
+	limit      int  // 只读取若干条有效的记录
+	isLimit    bool // 是否限制返回记录数量
 	fieldnames []string
 }
 
@@ -23,6 +27,17 @@ func (r *MapReader) Init(params csv.Reader) {
 	r.Reader.Comma = params.Comma
 	r.Reader.LazyQuotes = params.LazyQuotes
 	r.Reader.TrimLeadingSpace = params.TrimLeadingSpace
+}
+
+// SetSkip 设置跳过前面的若干条记录
+func (r *MapReader) SetSkip(skip int) {
+	r.skip = skip
+}
+
+// SetLimit 设置只提取若干条记录
+func (r *MapReader) SetLimit(limit int) {
+	r.limit = limit
+	r.isLimit = true
 }
 
 // SetFieldnames 指定csv文件的字段名
@@ -48,6 +63,26 @@ func (r *MapReader) Read() (record map[string]string, err error) {
 		r.fieldnames, err = r.Reader.Read()
 		if err != nil {
 			return nil, err
+		}
+	}
+
+	for {
+		if r.skip <= 0 {
+			break
+		}
+		// 跳过前面的若干记录
+		if _, err = r.Reader.Read(); err != nil {
+			return nil, err
+		}
+		r.skip--
+	}
+
+	if r.isLimit {
+		if r.limit == 0 {
+			// 已经读完所有记录
+			return nil, io.EOF
+		} else {
+			r.limit--
 		}
 	}
 
