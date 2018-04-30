@@ -106,6 +106,29 @@ func (w *MapWriter) WriteRows(rows []map[string]string) (err error)
 func (w *MapWriter) Flush() 
 ```
 
+## Reader API
+
+```go
+func NewReader(r io.Reader) *Reader
+
+// Init 配置csv的基本参数
+func (r *Reader) Init(params csv.Reader)
+
+// SetSkip 设置跳过前面的若干条记录
+func (r *Reader) SetSkip(skip int) 
+
+// SetLimit 设置只提取若干条记录
+func (r *Reader) SetLimit(limit int) 
+
+func (r *Reader) GetFieldnames() (fieldnames []string, err error) 
+
+// Read 读取一行记录
+func (r *Reader) Read() (record []string, err error) 
+
+// ReadAll 读取全部的内容
+func (r *Reader) ReadAll() (records [][]string, err error)
+```
+
 ## utils
 
 ```go
