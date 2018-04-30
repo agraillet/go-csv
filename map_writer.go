@@ -18,13 +18,24 @@ func NewMapWriter(w io.Writer, fieldnames []string) *MapWriter {
 	}
 }
 
-// Init 配置csv的基本参数
-func (w *MapWriter) Init(params csv.Writer) {
-	w.Writer.Comma = params.Comma
+// NewMapWriterSimple 简化的writer对象，可以通过SetHeader方法来设置Header
+func NewMapWriterSimple(w io.Writer) *MapWriter {
+	return &MapWriter{
+		Writer: csv.NewWriter(w),
+	}
+}
+
+func (w *MapWriter) SetHeader(fieldnames []string) {
+	w.fieldnames = fieldnames
 }
 
 func (w *MapWriter) WriteHeader() (err error) {
 	return w.Writer.Write(w.fieldnames)
+}
+
+// Init 配置csv的基本参数
+func (w *MapWriter) Init(params csv.Writer) {
+	w.Writer.Comma = params.Comma
 }
 
 func (w *MapWriter) WriteRow(row map[string]string) (err error) {

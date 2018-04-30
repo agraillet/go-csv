@@ -82,6 +82,11 @@ func (r *MapReader) ReadAll() (records []map[string]string, err error)
 ```go
 func NewMapWriter(w io.Writer, fieldnames []string) *MapWriter 
 
+// NewMapWriterSimple 简化的writer对象，可以通过SetHeader方法来设置Header
+func NewMapWriterSimple(w io.Writer) *MapWriter 
+
+func (w *MapWriter) SetHeader(fieldnames []string) 
+
 // Init 配置csv的基本参数
 func (w *MapWriter) Init(params csv.Writer) 
 
