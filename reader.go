@@ -54,18 +54,21 @@ func (r *Reader) GetFieldnames() (fieldnames []string, err error) {
 		if fieldnames, err = r.Reader.Read(); err != nil {
 			return nil, err
 		}
+	} else {
+		return r.fieldnames, nil
 	}
 
 	// 格式化fieldnames
 	emptyCnt := 0
-	for i := len(fieldnames) - 1; i >= 0; i-- {
+	l := len(fieldnames)
+	for i := l - 1; i >= 0; i-- {
 		if fieldnames[i] == "" {
 			emptyCnt++
 		} else {
 			break
 		}
 	}
-	fieldnames = fieldnames[:-emptyCnt]
+	fieldnames = fieldnames[:l-emptyCnt]
 	r.fieldnames = fieldnames
 	return fieldnames, nil
 }
@@ -74,8 +77,7 @@ func (r *Reader) GetFieldnames() (fieldnames []string, err error) {
 func (r *Reader) Read() (record []string, err error) {
 	if len(r.fieldnames) == 0 {
 		// 如果没有设置字段名，则默认为csv的第一行为字段名
-		r.fieldnames, err = r.Reader.Read()
-		if err != nil {
+		if _, err = r.Reader.Read(); err != nil {
 			return nil, err
 		}
 	}
