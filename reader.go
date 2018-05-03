@@ -1,4 +1,4 @@
-// 对原reader的封装
+// 参考Python的DictReader
 package goCsv
 
 import (
@@ -16,9 +16,9 @@ type Reader struct {
 }
 
 func NewReader(r io.Reader) *Reader {
-	return &Reader{
-		Reader: csv.NewReader(r),
-	}
+	reader := &Reader{}
+	reader.Reader = csv.NewReader(r)
+	return reader
 }
 
 // Init 配置csv的基本参数
@@ -39,14 +39,35 @@ func (r *Reader) SetLimit(limit int) {
 	r.isLimit = true
 }
 
+// SetFieldnames 指定csv文件的字段名
+// 如果不指定的话，则默认使用csv文件的第一行作为字段名
+func (r *Reader) SetFieldnames(fieldnames []string) {
+	r.fieldnames = fieldnames
+}
+
+// GetFieldnames 获取csv文件的header
+// csv文件在处理的时候，可能会最后会出现空字段
+// Error: Multiple indices with the same name ''
 func (r *Reader) GetFieldnames() (fieldnames []string, err error) {
 	if len(r.fieldnames) == 0 {
 		// 如果没有设置字段名，则默认为csv的第一行为字段名
-		if r.fieldnames, err = r.Reader.Read(); err != nil {
+		if fieldnames, err = r.Reader.Read(); err != nil {
 			return nil, err
 		}
 	}
-	return r.fieldnames, nil
+
+	// 格式化fieldnames
+	emptyCnt := 0
+	for i := len(fieldnames) - 1; i >= 0; i-- {
+		if fieldnames[i] == "" {
+			emptyCnt++
+		} else {
+			break
+		}
+	}
+	fieldnames = fieldnames[:-emptyCnt]
+	r.fieldnames = fieldnames
+	return fieldnames, nil
 }
 
 // Read 读取一行记录
