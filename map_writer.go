@@ -7,8 +7,9 @@ import (
 )
 
 type MapWriter struct {
-	Writer     *csv.Writer
-	fieldnames []string
+	Writer         *csv.Writer
+	fieldnames     []string
+	fieldNotSetErr bool // 字段未设置时，是否报错
 }
 
 func NewMapWriter(w io.Writer, fieldnames []string) *MapWriter {
@@ -29,6 +30,12 @@ func (w *MapWriter) SetHeader(fieldnames []string) {
 	w.fieldnames = fieldnames
 }
 
+// SetFieldNotSetErr 字段未设置时，是否报错
+// 默认为false，即当字段为设置时，会自动使用空字符串补充
+func (w *MapWriter) SetFieldNotSetErr(fieldNotSetErr bool) {
+	w.fieldNotSetErr = fieldNotSetErr
+}
+
 func (w *MapWriter) WriteHeader() (err error) {
 	return w.Writer.Write(w.fieldnames)
 }
@@ -47,7 +54,11 @@ func (w *MapWriter) WriteRow(row map[string]string) (err error) {
 		if val, ok = row[i]; ok {
 			record = append(record, val)
 		} else {
-			return errors.New("the field name is not exist: " + i)
+			if w.fieldNotSetErr {
+				return errors.New("the field name is not exist: " + i)
+			} else {
+				record = append(record, "")
+			}
 		}
 	}
 

@@ -93,6 +93,10 @@ func NewMapWriterSimple(w io.Writer) *MapWriter
 
 func (w *MapWriter) SetHeader(fieldnames []string) 
 
+// SetFieldNotSetErr 字段未设置时，是否报错
+// 默认为false，即当字段为设置时，会自动使用空字符串补充
+func (w *MapWriter) SetFieldNotSetErr(fieldNotSetErr bool) 
+
 // Init 配置csv的基本参数
 func (w *MapWriter) Init(params csv.Writer) 
 
